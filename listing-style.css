@@ -147,6 +147,21 @@ input, select, textarea {
   color: inherit;
 }
 
+/* Accessible Keyboard Navigation Outlines (WCAG 2.1 AA) */
+:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
 /* --------------------------------------------------------------------------
    3. Global Layout Container
    -------------------------------------------------------------------------- */
@@ -1392,23 +1407,36 @@ input, select, textarea {
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 1000;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--space-6);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.2, 0, 0, 1), visibility 0.3s ease;
 }
 
 .modal-overlay:target {
-  display: flex;
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.modal-backdrop-close {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: default;
+  background: transparent;
 }
 
 .modal-container {
   position: relative;
+  z-index: 2;
   background-color: var(--color-canvas);
   border-radius: var(--radius-lg);
   max-width: 900px;
@@ -1434,11 +1462,13 @@ input, select, textarea {
   color: var(--color-text-primary);
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
-  transition: background-color var(--transition-fast);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  z-index: 3;
 }
 
 .modal-close-btn:hover {
   background-color: var(--color-surface-hover);
+  transform: scale(1.08);
 }
 
 .modal-header h2 {
@@ -1670,7 +1700,14 @@ input, select, textarea {
   }
 
   .booking-sidebar {
-    display: none; /* Replaced by bottom bar */
+    display: block;
+    position: static;
+    margin-top: var(--space-8);
+  }
+
+  .sticky-reservation-card {
+    position: static;
+    box-shadow: var(--shadow-card);
   }
 
   .mobile-bottom-booking-bar {
